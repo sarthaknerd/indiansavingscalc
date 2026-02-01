@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indian Savings Calculator</title>
+
+  <style>
+    :root{
+      --primary:#2563eb;
+      --border:#e5e7eb;
+      --muted:#64748b;
+      --bg:#f8fafc;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg,#020617,#0f172a);
+      padding:24px;
+    }
+
+    .wrapper{
+      max-width:900px;
+      margin:auto;
+    }
+
+    .card{
+      background:#fff;
+      border-radius:24px;
+      padding:32px;
+      box-shadow:0 25px 50px rgba(0,0,0,.15);
+    }
+
+    .header{
+      text-align:center;
+      margin-bottom:28px;
+    }
+
+    .header h1{
+      margin:0;
+      font-size:26px;
+      letter-spacing:-0.3px;
+    }
+
+    .header p{
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .form{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .full{grid-column:1/-1}
+
+    label{
+      font-size:13px;
+      font-weight:600;
+      display:block;
+      margin-bottom:6px;
+    }
+
+    input,select{
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      font-size:15px;
+    }
+
+    input:focus,select:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 0 4px rgba(37,99,235,.15);
+    }
+
+    button{
+      width:100%;
+      padding:16px;
+      border-radius:18px;
+      border:none;
+      background:linear-gradient(135deg,var(--primary),#1e40af);
+      color:#fff;
+      font-size:15px;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:16px;
+      margin-top:28px;
+    }
+
+    .stat{
+      background:linear-gradient(180deg,#f8fafc,#eef2ff);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:16px;
+      text-align:center;
+    }
+
+    .stat span{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .stat b{
+      display:block;
+      margin-top:6px;
+      font-size:18px;
+      color:var(--primary);
+    }
+
+    @media(max-width:700px){
+      body{padding:16px}
+      .form{grid-template-columns:1fr}
+      .stats{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="card">
+    <div class="header">
+      <h1>Indian Savings Calculator</h1>
+      <p>SIP · PPF · EPF · FD · Bonds</p>
+    </div>
+
+    <div class="form">
+      <div class="full">
+        <label>Investment Type</label>
+        <select id="type" onchange="updateRate()">
+          <option value="sip">Mutual Fund SIP</option>
+          <option value="ppf">PPF</option>
+          <option value="epf">EPF / PF</option>
+          <option value="fd">Fixed Deposit</option>
+          <option value="bond">Govt / RBI Bonds</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Amount (₹)</label>
+        <input type="number" id="amount" value="5000" />
+      </div>
+
+      <div>
+        <label>Interest Rate (%)</label>
+        <input type="number" id="rate" />
+      </div>
+
+      <div class="full">
+        <label>Duration (Years)</label>
+        <input type="number" id="years" value="10" />
+      </div>
+
+      <div class="full">
+        <button onclick="calculate()">Calculate Wealth</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <span>Invested</span>
+        <b id="invested">–</b>
+      </div>
+      <div class="stat">
+        <span>Returns</span>
+        <b id="returns">–</b>
+      </div>
+      <div class="stat">
+        <span>Total Value</span>
+        <b id="total">–</b>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const defaultRates = {
+    sip: 12,
+    ppf: 7.1,
+    epf: 8.25,
+    fd: 6.5,
+    bond: 7
+  };
+
+  function updateRate(){
+    rate.value = defaultRates[type.value];
+    calculate();
+  }
+
+  function calculate(){
+    const A = +amount.value;
+    const y = +years.value;
+    const r = +rate.value / 100;
+    let total = 0;
+
+    if(type.value === "sip"){
+      const m = r / 12;
+      for(let i=0;i<y*12;i++){
+        total = total * (1 + m) + A;
+      }
+    } else {
+      for(let i=0;i<y;i++){
+        total = (total + A) * (1 + r);
+      }
+    }
+
+    const invested = type.value === "sip" ? A * y * 12 : A * y;
+
+    document.getElementById("invested").innerText = "₹" + invested.toLocaleString();
+    document.getElementById("returns").innerText = "₹" + Math.round(total - invested).toLocaleString();
+    document.getElementById("total").innerText = "₹" + Math.round(total).toLocaleString();
+  }
+
+  updateRate();
+</script>
+
+</body>
+</html>
