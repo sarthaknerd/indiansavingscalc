@@ -13,7 +13,7 @@
       --bg:#f8fafc;
     }
 
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box }
 
     body{
       margin:0;
@@ -57,7 +57,7 @@
       gap:20px;
     }
 
-    .full{grid-column:1/-1}
+    .full{ grid-column:1 / -1; }
 
     label{
       font-size:13px;
@@ -66,7 +66,7 @@
       margin-bottom:6px;
     }
 
-    input,select{
+    input, select{
       width:100%;
       padding:14px;
       border-radius:14px;
@@ -74,7 +74,7 @@
       font-size:15px;
     }
 
-    input:focus,select:focus{
+    input:focus, select:focus{
       outline:none;
       border-color:var(--primary);
       box-shadow:0 0 0 4px rgba(37,99,235,.15);
@@ -120,9 +120,9 @@
     }
 
     @media(max-width:700px){
-      body{padding:16px}
-      .form{grid-template-columns:1fr}
-      .stats{grid-template-columns:1fr}
+      body{ padding:16px; }
+      .form{ grid-template-columns:1fr; }
+      .stats{ grid-template-columns:1fr; }
     }
   </style>
 </head>
@@ -185,7 +185,7 @@
 </div>
 
 <script>
-  const defaultRates = {
+  const rates = {
     sip: 12,
     ppf: 7.1,
     epf: 8.25,
@@ -194,7 +194,7 @@
   };
 
   function updateRate(){
-    rate.value = defaultRates[type.value];
+    rate.value = rates[type.value];
     calculate();
   }
 
@@ -217,10 +217,14 @@
 
     const invested = type.value === "sip" ? A * y * 12 : A * y;
 
-    document.getElementById("invested").innerText = "₹" + invested.toLocaleString();
-    document.getElementById("returns").innerText = "₹" + Math.round(total - invested).toLocaleString();
-    document.getElementById("total").innerText = "₹" + Math.round(total).toLocaleString();
+    investedEl.textContent = "₹" + invested.toLocaleString();
+    returnsEl.textContent = "₹" + Math.round(total - invested).toLocaleString();
+    totalEl.textContent = "₹" + Math.round(total).toLocaleString();
   }
+
+  const investedEl = document.getElementById("invested");
+  const returnsEl = document.getElementById("returns");
+  const totalEl = document.getElementById("total");
 
   updateRate();
 </script>
